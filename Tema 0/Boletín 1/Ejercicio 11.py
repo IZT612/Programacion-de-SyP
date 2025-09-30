@@ -1,6 +1,6 @@
 
 # Lista de vocales
-vocales = ('a', 'e', 'i', 'o', 'u')
+vocales = ['a', 'e', 'i', 'o', 'u']
 
 # Funcion que verifica si la letra que recibe por parametro es vocal
 def es_vocal_fnct(letra) :
