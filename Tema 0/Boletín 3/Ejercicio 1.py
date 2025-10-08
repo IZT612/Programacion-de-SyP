@@ -34,22 +34,11 @@ class CuentaCorriente:
     
     def __eq__(self, otra_cuenta):
 
-        iguales = False
-
-        if (self.DNI == otra_cuenta.DNI):
-
-            iguales = True
-
-        return iguales
+        return self.DNI == otra_cuenta.DNI
 
     def __lt__(self, otra_cuenta):
 
-        menor = False
-        if (self.saldo < otra_cuenta.saldo):
-
-            menor = True
-
-        return menor
+        return self.saldo < otra_cuenta.saldo
     
 cuenta1 = CuentaCorriente('nolose', 2731, 'Ivan')
 
@@ -63,11 +52,11 @@ cuenta1.sacar_dinero(50)
 
 print('Ahora veamos el saldo tras quitar 50€:', cuenta1.saldo)
 
-print('Voy a mostrar ahora todos los datos de mi cuenta:\n', cuenta1.__str__())
+print('Voy a mostrar ahora todos los datos de mi cuenta:\n', cuenta1)
 
 cuenta2 = CuentaCorriente('nolose', 5000)
 
-print('Ahora echemosle un vistazo a esta otra:\n', cuenta2.__str__())
+print('Ahora echemosle un vistazo a esta otra:\n', cuenta2)
 
 print('Veamos si las cuentas son iguales o no:')
 
