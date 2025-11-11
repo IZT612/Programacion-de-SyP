@@ -1,7 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 from pydantic import BaseModel
 
-app = FastAPI()
+router = APIRouter(prefix="/personas", tags=["personas"])
 
 #Entidad persona
 class Persona(BaseModel):
@@ -78,11 +78,11 @@ def next_id():
    
    return max(lista_personas, key=lambda persona: persona.id).id + 1
 
-@app.get("/personas")
+@router.get("/")
 def persona():
     return lista_personas
 
-@app.get("/personas/{id}")
+@router.get("/{id}")
 def persona(id: int):
     personas = [persona for persona in lista_personas if persona.id == id]
 
@@ -91,7 +91,7 @@ def persona(id: int):
     else:
       return {"error": "No person found."}
     
-@app.get("/personas/dni/{dni}")
+@router.get("/dni/{dni}")
 def persona(dni: str):
     personas = [persona for persona in lista_personas if persona.dni == dni]
 
@@ -100,7 +100,7 @@ def persona(dni: str):
     else:
       return {"error": "No person found."}
     
-@app.get("/personas/nombre/{nombre}")
+@router.get("/nombre/{nombre}")
 def persona(nombre: str):
     personas = [persona for persona in lista_personas if persona.nombre == nombre]
 
@@ -109,7 +109,7 @@ def persona(nombre: str):
     else:
       return {"error": "No person found."}
     
-@app.get("/personas/telefono/{telefono}")
+@router.get("/telefono/{telefono}")
 def persona(telefono: str):
     personas = [persona for persona in lista_personas if persona.telefono == telefono]
 
@@ -118,7 +118,7 @@ def persona(telefono: str):
     else:
       return {"error": "No person found."}
     
-@app.get("/personas/correo/{correo}")
+@router.get("/correo/{correo}")
 def persona(correo: str):
     personas = [persona for persona in lista_personas if persona.correo == correo]
 
@@ -127,14 +127,14 @@ def persona(correo: str):
     else:
       return {"error": "No person found."}
     
-@app.post("/personas", status_code=201, response_model=Persona)
+@router.post("/", status_code=201, response_model=Persona)
 def persona(persona: Persona):
    
    persona.id = next_id()
    lista_personas.append(persona)
    return persona
 
-@app.put("/personas/{id}")
+@router.put("/{id}")
 def persona(id: int, persona: Persona):
    
     for index, persona_guardada in enumerate(lista_personas):
@@ -145,7 +145,7 @@ def persona(id: int, persona: Persona):
         
     raise HTTPException(status_code = 404, detail = "User not found")
 
-@app.delete("/personas/{id}")
+@router.delete("/{id}")
 def persona(id: int):
 
     for persona_guardada in lista_personas:

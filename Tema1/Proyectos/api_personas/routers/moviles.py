@@ -1,7 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 from pydantic import BaseModel
 
-app = FastAPI()
+router = APIRouter(prefix="/moviles", tags=["moviles"])
 
 class Movil(BaseModel):
     id: int
@@ -36,11 +36,11 @@ def next_id():
    
    return max(lista_moviles, key=lambda movil_lambda: movil_lambda.id).id + 1
 
-@app.get("/moviles")
+@router.get("/")
 def movil():
     return lista_moviles
 
-@app.get("/moviles/{id}")
+@router.get("/{id}")
 def movil(id: int):
 
     moviles = [movil for movil in lista_moviles if movil.id == id]
@@ -50,7 +50,7 @@ def movil(id: int):
     else:
         return {"error" : "Movil no encontrado"}
     
-@app.get("/moviles/persona/{id_persona}")
+@router.get("/persona/{id_persona}")
 def movil(id_persona: int):
 
     moviles = [movil for movil in lista_moviles if movil.id_persona == id_persona]
@@ -60,14 +60,14 @@ def movil(id_persona: int):
     else:
         return {"error" : "Movil no encontrado"}
 
-@app.post("/moviles", status_code=201, response_model=Movil)
+@router.post("/", status_code=201, response_model=Movil)
 def movil(movil: Movil):
 
     movil.id = next_id()
     lista_moviles.append(movil)
     return movil
 
-@app.put("/moviles/{id}")
+@router.put("/{id}")
 def movil(id: int, movil: Movil):
 
     for index, movil_guardado in enumerate(lista_moviles):
@@ -80,7 +80,7 @@ def movil(id: int, movil: Movil):
         
     raise HTTPException(status_code = 404, detail = "User not found")
 
-@app.delete("/moviles/{id}")
+@router.delete("/{id}")
 def movil(id: int):
 
     for movil_guardado in lista_moviles:
