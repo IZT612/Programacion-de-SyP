@@ -1,12 +1,10 @@
 import jwt
-
+from pydantic import BaseModel
 from jwt.exceptions import InvalidTokenError
-
 from pwdlib import PasswordHash
-
-from fastapi import APIRouter, HTTPException
-
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from datetime import *
 
 router = APIRouter(prefix="/login", tags=["login"])
 
@@ -41,7 +39,7 @@ users_db = {
         "fullname": "Iván Zamora Torres",
         "email": "ivan.zamora@iesnervion.es",
         "disabled": False,
-        "password": "ivanpw"
+        "password": "1234"
     },
 
     "admin" :{
@@ -54,43 +52,44 @@ users_db = {
 
 }
 
+@router.post("/register", status_code=201)
+def register(user: UserDB):
+    if user.username not in users_db:
+        hashed_password = password_hash.hash(user.password)
+        user.password = hashed_password
+        users_db[user.username] = user.model_dump()
+        return user
+    else:
+        raise HTTPException(status_code = 409, detail="User already exists.")
+
+
 @router.post("/login")
 async def login(form: OAuth2PasswordRequestForm = Depends()):
 
-    # Miramos si el usuario existe en la Base de Datos
     user_db = users_db.get(form.username)
+    if user_db:
+    # Si el usuario existe en la base de datos
+    # Comprobamos las contraseñas
 
-    # Si no está en la base de datos se lanza una excepción
-    if not user_db:
-        raise HTTPException(status_code = 400, detail="Usuario no encontrado")
-    
-    # Si está, creamos un objeto de tipo UserDB a partir de su información
-    user = UserDB( **users_db[form.username])
+        user = UserDB(**user_db)
 
-    # Comprobamos que las contraseñas coinciden con verify
-    if not password_hash.verify(form.password, user.hashed_password):
-
-    # Si no coinciden lanzamos excepción
-        raise HTTPException(status_code=400, detail="La contraseña no es correcta")
-    
-    # Tomamos la hora actual + el tiempo de expiración del token que es un min
-    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-
-    # Parámetros de nuestro token: el ufake_users_dbsuario, fecha de expiración
-    access_token = {"sub" : user.username, "exp":expire}
-
-    # Para generar el token le pasamos la información a cifrar que es el usuario en sí y la fecha de expiración
-    # También le pasamos la semilla y el algoritmo utilizado para generar el token
-    token = jwt.encode(access_token, SECRET_KEY, algorithm=ALGORITHM)
-
-    # Si todo va bien, devolvemos el token generado
-    return {"access_token" : token, "token_type": "bearer"}
+        try:
+            if password_hash.verify(form.password, user.password):
+                expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+                access_token = {"sub": user.username, "exp":expire}
+                # Generamos el token
+                token = jwt.encode(access_token, SECRET_KEY, algorithm=ALGORITHM)
+                return {"access_token":token, "token_type":"bearer"}
+    #raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+        except:
+            raise HTTPException(status_code=401, detail="Error en la autenticación.")
+    raise HTTPException(status_code=401, detail="Usuario o contraseña incorrectos.")
 
 # Esta función será nuestra dependencia
 # Lo que pretendemos con esta función es que
 # nos devuelva el usuario a partir del token
 # En esta función, nuestra relación de dependencia es el objeto oauth2
-async def auth_user(token:str = Depends(oauth2)):
+async def authentication(token:str = Depends(oauth2)):
 
     # Para poder obtener el usuario a partir del token tenemos que desencriptarlo
     # con exactamente las mismas características que para encriptarlo
