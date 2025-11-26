@@ -1,12 +1,12 @@
 import jwt
 from pydantic import BaseModel
-from jwt.exceptions import InvalidTokenError
+from jwt.exceptions import InvalidTokenError, PyJWTError
 from pwdlib import PasswordHash
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import *
 
-router = APIRouter(prefix="/login", tags=["login"])
+router = APIRouter()
 
 oauth2 = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -39,7 +39,7 @@ users_db = {
         "fullname": "Iván Zamora Torres",
         "email": "ivan.zamora@iesnervion.es",
         "disabled": False,
-        "password": "1234"
+        "password": PasswordHash.recommended().hash("1234")
     },
 
     "admin" :{
@@ -47,10 +47,14 @@ users_db = {
         "fullname": "Admin",
         "email": "admin@gmail.com",
         "disabled": False,
-        "password": "adminpw"
+        "password": PasswordHash.recommended().hash("adminpw")
     }
 
 }
+
+def search_user_db(username: str):
+    if username in users_db:
+        return UserDB(users_db[username])
 
 @router.post("/register", status_code=201)
 def register(user: UserDB):
@@ -114,4 +118,8 @@ async def authentication(token:str = Depends(oauth2)):
         raise HTTPException(status_code=400, detail="Usuario inactivo")
 
     # Retornamos un usuario correcto y habilitado
+    return user
+
+@router.get("/auth/me")
+async def me(user: User = Depends(authentication)):
     return user
