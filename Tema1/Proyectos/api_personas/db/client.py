@@ -12,4 +12,4 @@ from pymongo import MongoClient
 
 
 # Base de datos en remoto
-db_client = MongoClient()
+db_client = MongoClient("mongodb+srv://ivanzamora_db_user:esteeste1200669@cluster0.1azkx7r.mongodb.net/?appName=Cluster0")
