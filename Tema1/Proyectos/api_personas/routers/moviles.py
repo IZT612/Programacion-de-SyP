@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, APIRouter
+from fastapi import FastAPI, HTTPException, APIRouter, Depends
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/moviles", tags=["moviles"])
