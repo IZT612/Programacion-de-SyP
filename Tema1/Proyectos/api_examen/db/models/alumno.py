@@ -1,8 +1,8 @@
 from typing import Optional
 from pydantic import BaseModel
 
-#Entidad colegio
-class Colegio(BaseModel):
+#Entidad alumno
+class Alumno(BaseModel):
 
     id: Optional[str] = None
     nombre: str
