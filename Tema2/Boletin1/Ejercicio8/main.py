@@ -1,8 +1,8 @@
+from functions import sumarNumeros, leerFichero
 from multiprocessing import Process, Pipe
-from functions import leerFichero, sumarNumeros
 import time
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     conn_sumar, conn_leer = Pipe()
 
@@ -13,12 +13,12 @@ if __name__ == '__main__':
 
     p1.start()
     p2.start()
-
+    
     p1.join()
     p2.join()
 
-    final = time.perf_counter()
+    fin = time.perf_counter()
 
-    tiempo_total = final - inicio
+    tiempo_total = fin - inicio
 
-    print("Se han terminado todos los procesos en", tiempo_total, "segundos")
+    print("Todos los procesos han terminado en", tiempo_total, "segundos")

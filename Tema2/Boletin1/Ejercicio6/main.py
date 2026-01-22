@@ -8,20 +8,25 @@ if __name__ == "__main__":
 
     contador = 0
 
-    numeros = []
+    numeros1 = []
+    numeros2 = []
 
     while(contador < cantidad_procesos):
 
         contador += 1
 
-        numero = int(input("Introduzca un número para sumar todos los números desde el 1 hasta el que introduzca: "))
+        numero1 = int(input("Introduzca un número: "))
 
-        numeros.append(numero)
+        numero2 = int(input("Introduzca otro número para sumar los que hay entre este y el anterior: "))
+
+        numeros1.append(numero1)
+
+        numeros2.append(numero2)
 
     with Pool(processes=4) as pool:
 
         inicio = time.perf_counter()
-        results = pool.map(sumarNumeros, numeros)
+        pool.starmap(sumarNumeros, zip(numeros1, numeros2))
         fin = time.perf_counter()
 
         tiempo_pool = fin - inicio

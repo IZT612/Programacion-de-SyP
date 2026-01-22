@@ -1,6 +1,5 @@
-from function import sumarNumeros
+from functions import sumarNumeros
 from multiprocessing import Process
-import os
 import time
 
 if __name__ == "__main__":
@@ -15,11 +14,11 @@ if __name__ == "__main__":
 
         contador += 1
 
-        numero_inicial = int(input("Introduzca un número desde el que empezar a sumar: "))
+        numero1 = int(input("Introduzca un número: "))
 
-        numero_limite = int(input("Introduzca un número para hasta el que sumar: "))
+        numero2 = int(input("Introduzca otro número para sumar los que hay entre este y el anterior: "))
 
-        procesos.append(Process(target=sumarNumeros, args=(numero_inicial, numero_limite)))
+        procesos.append(Process(target=sumarNumeros, args=(numero1, numero2)))
 
     inicio_total = time.perf_counter()
 

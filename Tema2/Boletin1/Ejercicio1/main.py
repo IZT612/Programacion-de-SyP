@@ -1,6 +1,5 @@
-from funcion import sumarNumeros
+from functions import sumarNumeros
 from multiprocessing import Process
-import os
 import time
 
 if __name__ == "__main__":

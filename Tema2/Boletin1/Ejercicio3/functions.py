@@ -15,7 +15,7 @@ def sumarNumeros(cola):
 
     resultado = 0
 
-    while cola:
+    while True:
 
         numero = cola.get()
 
