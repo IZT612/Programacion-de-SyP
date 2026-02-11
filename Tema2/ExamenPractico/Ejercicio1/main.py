@@ -4,40 +4,45 @@ from functions import generar_temperaturas, buscar_maxima, buscar_minima, CARPET
 
 if __name__ == "__main__":
     
+    # Mes en el que registraremos las temperaturas (El ejercicio pide específicamente diciembre)
     mes = 12
-    # Preparamos la lista de argumentos: [(1, 12), (2, 12), ..., (31, 12)]
+
+    # Argumentos que recibirá cada proceso, el día (del 1 al 31) y mes
     argumentos = [(dia, mes) for dia in range(1, 32)]
 
     print("--- FASE 1: Generación de ficheros con Pool ---")
     
-    # Creamos un Pool. Python decide cuántos procesos usar (suele ser nº de núcleos CPU)
+    # Creamos la Pool para el primer proceso
     with multiprocessing.Pool() as pool:
-        # starmap ejecuta 'generar_temperaturas' para cada par de argumentos
+
+        # Generamos las temperaturas para cada día del mes
         pool.starmap(generar_temperaturas, argumentos)
         
     print("Fase 1 completada.\n")
 
     print("--- FASE 2: Cálculo de Máximas y Mínimas ---")
-    
-    # Usamos el Pool para calcular y RECUPERAR los datos
+
+    # Creamos la Pool para los dos últimos procesos
     with multiprocessing.Pool() as pool:
-        # Lanzamos los procesos y guardamos lo que nos devuelven en variables
+
+        # Guardamos las temperaturas máximas y mínimas de cada día
         resultados_max = pool.starmap(buscar_maxima, argumentos)
         resultados_min = pool.starmap(buscar_minima, argumentos)
 
-    # --- FASE 3: Escritura centralizada (Solo el Main escribe) ---
+
     print("Escribiendo resultados en ficheros finales...")
     
+    # Guardamos las rutas de los ficheros 'maximas' y 'minimas'
     ruta_maximas = os.path.join(CARPETA, "maximas.txt")
     ruta_minimas = os.path.join(CARPETA, "minimas.txt")
 
-    # Escribimos Máximas
+    # Abrimos ambos archivos en modo escritura e insertamos sus datos respectivos
     with open(ruta_maximas, "w") as f:
         for dato in resultados_max:
-            if dato: # Si no es None (por si algún fichero falló)
+            if dato: 
                 f.write(dato)
 
-    # Escribimos Mínimas
+
     with open(ruta_minimas, "w") as f:
         for dato in resultados_min:
             if dato:

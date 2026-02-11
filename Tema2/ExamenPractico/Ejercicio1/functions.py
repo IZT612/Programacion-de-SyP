@@ -1,45 +1,52 @@
 import random
 import os
 
-# Definimos el nombre de la carpeta
+# Guardamos la ruta de la carpeta donde guardaremos los ficheros
 DIRECTORIO_BASE = os.path.dirname(os.path.abspath(__file__))
 CARPETA = os.path.join(DIRECTORIO_BASE, "Ficheros")
 
+# Rutas de los ficheros de temperatura maxima y minima
 ruta_maximas = os.path.join(CARPETA, "maximas.txt")
 ruta_minimas = os.path.join(CARPETA, "minimas.txt")
 
-def preparar_ficheros_resultados():
-    if not os.path.exists(CARPETA):
-        os.makedirs(CARPETA)
 
-    ruta_maximas = os.path.join(CARPETA, "maximas.txt")
-    ruta_minimas = os.path.join(CARPETA, "minimas.txt")
+"""
+Proceso 1
 
-    with open(ruta_maximas, "w") as f:
-        pass 
-    
-    with open(ruta_minimas, "w") as f:
-        pass
+Genera el nombre del archivo según el día y mes recibidos mediante parámetros, genera 24 temperaturas aleatorias y las escribe en el fichero
 
-# --- PROCESO 1: Generar Temperaturas ---
+Args:
+    dia (int): Día en el que se midieron las temperaturas.
+    mes (int): Mes en el que se midieron las temperaturas.
+"""
 def generar_temperaturas(dia, mes):
-    # Creamos el nombre: "01-12.txt"
+
     nombre_archivo = f"{dia:02d}-{mes:02d}.txt"
-    # Unimos la carpeta con el nombre: "Ficheros/01-12.txt"
+
     ruta_completa = os.path.join(CARPETA, nombre_archivo)
 
     try:
-        # El modo "w" sobrescribe el fichero si ya existe (lo vacía y escribe de nuevo)
+
         with open(ruta_completa, "w") as f:
             for _ in range(24):
-                # Aleatorio entre 0 y 20 con 2 decimales
+
                 temp = round(random.uniform(0, 20), 2)
                 f.write(f"{temp}\n")
     except Exception as e:
         print(f"Error generando fichero {ruta_completa}: {e}")
 
-# --- PROCESO 2: Buscar Máximas ---
-def buscar_maxima(dia, mes):
+"""
+Proceso 2
+
+Busca en un fichero que coincida con el día y mes recibidos por parametros la temperatura máxima registrada
+
+Args:
+    dia (int): Día del fichero en el que buscar la temp máxima
+    mes (int): Mes del fichero en el que buscar la temp máxima
+
+Return: String que escribir en el fichero 'maximas.txt' con el siguiente formato: 'dia-mes:temperatura'
+"""
+def buscar_maxima(dia, mes):    
     etiqueta = f"{dia:02d}-{mes:02d}"
     nombre_fichero = f"{etiqueta}.txt"
     ruta_lectura = os.path.join(CARPETA, nombre_fichero)
@@ -58,7 +65,17 @@ def buscar_maxima(dia, mes):
     except FileNotFoundError:
         return None
 
-# --- PROCESO 3: Buscar Mínimas ---
+"""
+Proceso 3
+
+Busca en un fichero que coincida con el día y mes recibidos por parametros la temperatura mínima registrada
+
+Args:
+    dia (int): Día del fichero en el que buscar la temp mínima
+    mes (int): Mes del fichero en el que buscar la temp mínima
+
+Return: String que escribir en el fichero 'minimas.txt' con el siguiente formato: 'dia-mes:temperatura'
+"""
 def buscar_minima(dia, mes):
     etiqueta = f"{dia:02d}-{mes:02d}"
     nombre_fichero = f"{etiqueta}.txt"
@@ -72,8 +89,6 @@ def buscar_minima(dia, mes):
         
         if temps:
             minima = min(temps)
-            # --- CAMBIO IMPORTANTE ---
-            # Devolvemos el texto al Main.
             return f"{etiqueta}:{minima}\n"
 
     except FileNotFoundError:
