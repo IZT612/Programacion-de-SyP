@@ -14,17 +14,17 @@ class Peaton(threading.Thread):
         
         evento_semaforo.wait()
         
-        print(f"🚶 {self.name} cruza la calle.")
+        print(f"{self.name} cruza la calle.")
         time.sleep(0.5)
 
 class Semaforo(threading.Thread):
     def run(self):
         for _ in range(3): 
-            print("\n🔴 SEMÁFORO EN ROJO (Peatones esperan)...")
+            print("\nSEMÁFORO EN ROJO (Peatones esperan)...")
             evento_semaforo.clear()
             time.sleep(3)
             
-            print("\n🟢 SEMÁFORO EN VERDE (Pueden cruzar)...")
+            print("\nSEMÁFORO EN VERDE (Pueden cruzar)...")
             evento_semaforo.set()
             time.sleep(2)
         

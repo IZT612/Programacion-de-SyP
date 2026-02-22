@@ -20,4 +20,4 @@ class Corredor(threading.Thread):
         fin = time.time()
         
         tiempo_total = fin - inicio
-        print(f"🏁 Corredor {self.dorsal} llegó a la meta en {tiempo_total:.4f} segundos.")
+        print(f"Corredor {self.dorsal} llegó a la meta en {tiempo_total:.4f} segundos.")

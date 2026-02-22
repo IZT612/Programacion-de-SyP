@@ -7,14 +7,14 @@ def main():
     for t in trabajadores:
         t.start()
 
-    time.sleep(2)
-    print("\n--- ¡COMIENZA EL TURNO! ---\n")
+    time.sleep(1) 
+    print("\n--- TODOS LOS TRABAJADORES ESTÁN LISTOS, EL TURNO COMIENZA ---\n")
 
     for i in range(3):
-        print(f"\n🔔 JEFE: ¡NUEVO PEDIDO {i+1} DISPONIBLE!")
+        print(f"\nJEFE: ¡NUEVO PEDIDO {i+1} DISPONIBLE!")
         Trabajador.evento_hay_pedido.set()
         
-        time.sleep(4)
+        time.sleep(3)
 
     print("\nFin del turno. Cerrando almacén.")
 

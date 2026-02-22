@@ -15,12 +15,14 @@ class Trabajador(threading.Thread):
 
     def run(self):
         print(f"{self.name} ha fichado y espera a sus compañeros.")
+        
         Trabajador.barrera_inicio.wait()
+        
+        print(f"{self.name} YA ESTÁ EN SU PUESTO.")
         
         while True:
             Trabajador.evento_hay_pedido.wait()
             
-
             pedido_cogido = False
             
             with Trabajador.lock_pedido:
@@ -29,8 +31,8 @@ class Trabajador(threading.Thread):
                     pedido_cogido = True
             
             if pedido_cogido:
-                print(f"📦 {self.name} está PREPARANDO el pedido...")
+                print(f"{self.name} está PREPARANDO el pedido...")
                 time.sleep(2)
-                print(f"✅ {self.name} terminó el pedido.")
+                print(f"{self.name} terminó el pedido.")
             else:
                 pass

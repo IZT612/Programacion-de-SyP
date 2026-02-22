@@ -18,7 +18,7 @@ class JugadorEscape(threading.Thread):
             intento = random.randint(0, 5000)
             
             if intento == JugadorEscape.clave_correcta:
-                print(f"💡 ¡{self.name} ENCONTRÓ LA CLAVE ({intento})!")
+                print(f"¡{self.name} ENCONTRÓ LA CLAVE ({intento})!")
                 JugadorEscape.evento_encontrado.set()
             
             time.sleep(0.01)
@@ -30,4 +30,4 @@ class JugadorEscape(threading.Thread):
         except threading.BrokenBarrierError:
             pass
 
-        print(f"🚪 {self.name} ha salido de la habitación.")
+        print(f"{self.name} ha salido de la habitación.")
